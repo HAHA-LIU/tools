@@ -71,6 +71,7 @@ for n in range(300):
 #                'parent_id': new_user.id})
 
 
+
 # 平级创建
 # for i in range(1000):
 #     params.update({'name': ''.join(random.sample(str(uuid.uuid4()).replace('-', ''), 3)), 'parent_id': parent_id})
