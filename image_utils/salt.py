@@ -6,7 +6,6 @@
 import cv2
 import numpy as np
 
-
 def salt(img, n):
     for k in range(n):
         i = int(np.random.random() * img.shape[1])

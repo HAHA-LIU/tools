@@ -7,7 +7,7 @@ a = time.time()
 
 from sqlalchemy import create_engine
 
-DB_CONNECT_STRING = 'mysql+mysqldb://root:ouFo3bof53J1hqoTvrtnFMp7PP1DwCHM0hVGFjW1@192.168.18.126:16030/dashboard?charset=utf8'
+DB_CONNECT_STRING = 'mysql+mysqldb://root:ouFo3bof53J1hqoTvrtnFMp7PP1DwCHM0hVGFjW1@192.168.18.64:16030/dashboard?charset=utf8'
 engine = create_engine(DB_CONNECT_STRING,echo=False)
 
 import sqlalchemy as sa
@@ -23,8 +23,7 @@ class InstanceCatalog(BASE):
     parent_id = sa.Column(sa.Integer)
     project_id = sa.Column(sa.String(64))
     region_id = sa.Column(sa.String(255))
-    tag = sa.Column(sa.Integer)
-    vm_count = sa.Column(sa.Integer)
+    tag = sa.Column(sa.String(64))
 
 from sqlalchemy.orm import sessionmaker
 DBSession = sessionmaker(bind=engine)
@@ -32,16 +31,18 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # 创建新User对象:
-parent_id = 1
+parent_id = None
+project_id = '3471797e24e14d169bdd32dc62f8c11f'
+region_id = '9e113649-2364-4151-a49e-70e88d2fbb9f'
 
 params = {'name': ''.join(random.sample(str(uuid.uuid4()).replace('-',''),3)),
           'parent_id': parent_id,
-          'project_id': '54e94050c7da4a9e9566f8845c932f78',
-          'region_id': 'aa0252d6-92ba-4cf8-9309-c512b85e4324',
-          'tag': 0, 'vm_count': 0}
+          'project_id': project_id,
+          'region_id': region_id,
+          'tag': 'normal'}
 
 # 层级创建
-for n in range(300):
+for n in range(2):
     params.update({'name': ''.join(random.sample(str(uuid.uuid4()).replace('-',''),3)),
                    'parent_id': parent_id})
     new_user1 = InstanceCatalog(**params)
@@ -49,7 +50,7 @@ for n in range(300):
     session.flush()
     params.update({'name': ''.join(random.sample(str(uuid.uuid4()).replace('-',''),3)),
                    'parent_id': new_user1.id})
-    for i in range(300):
+    for i in range(1000):
         params.update({'name': ''.join(random.sample(str(uuid.uuid4()).replace('-', ''), 3)),
                        'parent_id': new_user1.id})
         new_user2 = InstanceCatalog(**params)
@@ -58,19 +59,12 @@ for n in range(300):
         session.flush()
         params.update({'name': ''.join(random.sample(str(uuid.uuid4()).replace('-', ''), 3)),
                        'parent_id': new_user2.id})
-        for m in range(50):
-            new_user3 = InstanceCatalog(**params)
-            # 添加到session:
-            session.add(new_user3)
-
-
-
-# # 刷新获取插入数据的主键
-# session.flush()
-# params.update({'name': ''.join(random.sample(str(uuid.uuid4()).replace('-',''),3)),
-#                'parent_id': new_user.id})
-
-
+        # for m in range(10):
+        #     params.update({'name': ''.join(random.sample(str(uuid.uuid4()).replace('-', ''), 3)),
+        #                    'parent_id': new_user2.id})
+        #     new_user3 = InstanceCatalog(**params)
+        #     # 添加到session:
+        #     session.add(new_user3)
 
 # 平级创建
 # for i in range(1000):
