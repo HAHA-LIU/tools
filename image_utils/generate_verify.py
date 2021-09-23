@@ -232,4 +232,6 @@ def generate_verify_image(size=(120, 30),
     return strs, img_data
 
 if __name__ == '__main__':
+
     print(generate_verify_image())
+    print('000')
